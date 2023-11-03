@@ -1,6 +1,6 @@
 export type RatingFormData = {
   artistName: string;
-  event: string;
+  eventName: string;
   year: number;
   rating: number;
 };

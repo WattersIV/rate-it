@@ -38,10 +38,10 @@ export default function Home() {
               placeholder="Artist Name"
             />
             <Input
-              name="event"
+              name="eventName"
               className="m-2"
               type="text"
-              placeholder="Event"
+              placeholder="Event Name"
             />
             <Input
               name="year"
