@@ -1,5 +1,4 @@
 'use server';
-import { NextResponse } from 'next/server';
 import { RatingFormData } from '../types/form';
 import { sql } from '@vercel/postgres';
 import { User } from '../types/user';

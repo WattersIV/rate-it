@@ -2,32 +2,21 @@
 
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { QueryResult, sql } from '@vercel/postgres';
-import { User } from '../types/user';
+import deleteRating from '../actions/deleteRating';
 import { RatingResponse } from '../types/db';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
-import { revalidatePath } from 'next/cache';
-export default async function ViewRatings() {
-  const user: User = { name: 'noot', id: 1 };
 
-  async function deleteRating(ratingId: number) {
-    'use server';
-    try {
-      await sql`
-        DELETE FROM ratings
-        WHERE rating_id = ${ratingId}
-      `;
-      revalidatePath('/view-ratings');
-      return 'success';
-    } catch (error) {
-      return error;
-    }
-  }
+export default async function ViewRatings({
+  params,
+}: {
+  params: { userName: string };
+}) {
+  const userName = params.userName;
 
   const response: QueryResult<RatingResponse> = await sql`
-    SELECT rating_id, artist_name, event_name, year, rating
-    FROM ratings
-    WHERE user_id = ${user.id}
+  SELECT * FROM ratings
+  WHERE user_id = (SELECT user_id FROM users WHERE username = ${userName});
   `;
   const ratings = response.rows;
   return (
@@ -35,7 +24,7 @@ export default async function ViewRatings() {
       {ratings.map((item) => (
         <Card key={item.rating_id}>
           <CardHeader>
-            <CardTitle>
+            <CardTitle className="flex items-center">
               {item.artist_name} - {item.rating}
               <form action={deleteRating.bind(null, item.rating_id)}>
                 <IconButton type="submit" aria-label="Delete Entry">
